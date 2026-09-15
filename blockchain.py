@@ -44,3 +44,11 @@ class Blockchain:
                 return False
 
         return True
+    def show_chain(self):
+        for block in self.chain:
+            print("=" * 50)
+            print("Block :", block.index)
+            print("Timestamp :", block.timestamp)
+            print("Data  :", block.data)
+            print("PREV  :", block.previous_hash)
+            print("HASH  :", block.hash)

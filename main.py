@@ -1,48 +1,53 @@
 from blockchain import Blockchain
-
+import pow 
+from pos import proof_of_stake
 blockchain = Blockchain()
 
+# ================================================
+# TEMA: Perjalanan 1 tiket konser dari terbit -> dipakai
+# Aktor 1 & 2 (asli dari modul) + Aktor 3 & 4 (tambahan sesuai tugas)
+# Kategori tiket: Reguler, VIP, VVIP, Premium (isi salah satu di "kategori")
+# ================================================
 
-# 1. Promotor menerbitkan (mint) tiket sebagai aset digital
+# 1. Promotor menerbitkan tiket
 blockchain.add_block({
-    "ticket_id": "TIX-2026-001",
-    "event": "Cirebon Music Fest 2026",
-    "category": "VIP",
-    "actor": "Promotor",
-    "action": "Mint Tiket (Issue)",
-    "location": "Cirebon"
+    "tiket_id": "TKT-001",
+    "event": "Konser Musik Jakarta",
+    "kategori": "VIP",
+    "aktor": "Promotor",
+    "aksi": "Menerbitkan tiket",
+    "lokasi": "Jakarta"
 })
 
-# 2. Pembeli pertama membeli tiket langsung dari promotor
+# 2. Vendor Resmi menjual tiket ke publik
 blockchain.add_block({
-    "ticket_id": "TIX-2026-001",
-    "event": "Cirebon Music Fest 2026",
-    "category": "VIP",
-    "actor": "Pembeli Pertama",
-    "action": "Beli Tiket (Primary Sale)",
-    "location": "Cirebon"
+    "tiket_id": "TKT-001",
+    "event": "Konser Musik Jakarta",
+    "kategori": "VIP",
+    "aktor": "Vendor Resmi",
+    "aksi": "Menjual tiket ke pembeli",
+    "lokasi": "Jakarta"
 })
 
-# 3. Tiket dijual kembali melalui platform resale resmi
+# 3. Reseller menjual ulang tiket (aktor tambahan #1)
 blockchain.add_block({
-    "ticket_id": "TIX-2026-001",
-    "event": "Cirebon Music Fest 2026",
-    "category": "VIP",
-    "actor": "Platform Resale",
-    "action": "Transfer Kepemilikan (Resale)",
-    "location": "Online"
+    "tiket_id": "TKT-001",
+    "event": "Konser Musik Jakarta",
+    "kategori": "VIP",
+    "aktor": "Reseller",
+    "aksi": "Menjual ulang tiket",
+    "lokasi": "Jakarta"
 })
 
-# 4. Petugas venue memverifikasi tiket saat check-in di pintu masuk
+# 4. Penonton check-in di lokasi konser (aktor tambahan #2)
 blockchain.add_block({
-    "ticket_id": "TIX-2026-001",
-    "event": "Cirebon Music Fest 2026",
-    "category": "VIP",
-    "actor": "Petugas Venue",
-    "action": "Verifikasi & Check-in",
-    "location": "Gerbang Venue"
+    "tiket_id": "TKT-001",
+    "event": "Konser Musik Jakarta",
+    "kategori": "VIP",
+    "aktor": "Penonton",
+    "aksi": "Check-in di pintu masuk",
+    "lokasi": "Jakarta"
 })
-
 
 for block in blockchain.chain:
 
@@ -53,3 +58,48 @@ for block in blockchain.chain:
     print("HASH  :", block.hash)
 
 print("\nBlockchain valid:", blockchain.is_valid())
+
+
+# ================================================
+# EKSPERIMEN PROOF OF WORK
+# Menambang ulang salah satu block (misal block terakhir) 
+# untuk memenuhi target difficulty
+# ================================================
+
+print("\n" + "=" * 50)
+print("PROOF OF WORK")
+
+difficulty = 4
+target_block = blockchain.chain[-1]  # block check-in penonton
+
+print("\nData Block      :", target_block.data)
+print("Difficulty       :", difficulty)
+
+pow.proof_of_work(target_block, difficulty)
+
+print("Nonce            :", target_block.nonce)
+print("Hash             :", target_block.hash)
+
+
+# ================================================
+# EKSPERIMEN PROOF OF STAKE
+# Simulasi pemilihan validator dari para aktor tiket
+# ================================================
+
+print("\n" + "=" * 50)
+print("PROOF OF STAKE")
+
+validators = {
+    "Promotor": 10,
+    "Vendor Resmi": 20,
+    "Reseller": 30,
+    "Penonton": 40
+}
+
+print("\nValidator:")
+for validator, stake in validators.items():
+    print(f"- {validator}: {stake} stake")
+
+selected = proof_of_stake(validators)
+
+print("\nValidator terpilih:", selected)
